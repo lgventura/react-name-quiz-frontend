@@ -2,69 +2,31 @@ import { useEffect, useState } from "react";
 import HeaderInfos from "./components/HeaderInfos";
 import InputWord from "./components/InputWord";
 import TableWords from "./components/TableWords";
-
-// Implement to get Words from BE
-const wordsArray = [
-  "break",
-  "do",
-  "instanceof",
-  "typeof",
-  "case",
-  "else",
-  "new",
-  "var",
-  "catch",
-  "finally",
-  "return",
-  "void",
-  "continue",
-  "for",
-  "switch",
-  "while",
-  "debugger",
-  "function",
-  "this",
-  "with",
-  "default",
-  "if",
-  "throw",
-  "delete",
-  "in",
-  "try",
-  "abstract",
-  "export",
-  "interface",
-  "static",
-  "boolean",
-  "extends",
-  "long",
-  "final",
-  "char",
-  "float",
-  "package",
-  "throws",
-  "class",
-  "private",
-  "transient",
-  "const",
-  "implements",
-  "protected",
-  "double",
-  "import",
-  "public",
-  "enum",
-  "int",
-  "short",
-];
+import axios from "axios";
 
 const App = () => {
   const [inputWord, setInputWord] = useState("");
   const [wordsFound, setWordsFound] = useState(Array(50).fill(""));
   const [points, setPoints] = useState(0);
+  const [wordsArray, setWordsArray] = useState([]);
+
+  useEffect(() => {
+    const fetchWordsFromAPI = async () => {
+      try {
+        const response = await axios.get("http://localhost:4000/api/names");
+        console.log("response", response);
+        setWordsArray(response.data);
+      } catch (error) {
+        console.error("Error to get words from API:", error);
+      }
+    };
+
+    fetchWordsFromAPI();
+  }, []);
 
   useEffect(() => {
     checkWords();
-  }, [inputWord]);
+  }, [inputWord, wordsArray]);
 
   const checkWords = () => {
     const wordFoundIndex = wordsArray.findIndex(
